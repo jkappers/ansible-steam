@@ -1,0 +1,28 @@
+- name: Install x64 dependencies
+  apt: name={{ item }}
+  with_items:
+    - lib32gcc1
+    - lib32stdc++6
+    - libcurl4-gnutls-dev:i386
+
+- name: Create steam user account
+  user: name={{ steam_user }}
+
+- name: Create steamcmd directory
+  file:
+    path=~{{ steam_user }}/steamcmd
+    owner={{ steam_user }}
+    state=directory
+
+- name: Download steamcmd
+  get_url:
+    dest=~{{ steam_user }}/steamcmd/steamcmd_linux.tar.gz
+    url=http://media.steampowered.com/installer/steamcmd_linux.tar.gz
+    owner={{ steam_user }}
+
+- name: Unarchive steamcmd package
+  unarchive:
+    copy=no
+    src=~{{ steam_user }}/steamcmd/steamcmd_linux.tar.gz
+    dest=~{{ steam_user }}/steamcmd
+    creates=~{{ steam_user }}/steamcmd/steamcmd.sh

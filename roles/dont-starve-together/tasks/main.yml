@@ -1,0 +1,25 @@
+- name: Make settings directory
+  file:
+    path=~/.klei/DoNotStarveTogether
+    state=directory
+
+- name: Ensure steam_force_install_dir dir exists
+  file: path={{steam_force_install_dir}} owner={{ steam_user }} state=directory
+
+- name: Copy app install script
+  template: src=../templates/install.j2 dest={{ steam_force_install_dir }}/install.scmd owner={{steam_user}}
+
+- name: Install app
+  command: ./steamcmd.sh +runscript {{steam_force_install_dir}}/install.scmd
+  args:
+    chdir: ~{{ steam_user }}/steamcmd/
+    creates: "{{ steam_force_install_dir }}/bin"
+  sudo: yes
+  sudo_user: '{{ steam_user }}'
+
+- name: Ensure settings dir exists
+  file: path=~{{ steam_user }}/.klei/DoNotStarveTogether state=directory
+
+- name: Copy settings.ini
+  template: src=../templates/settings.ini.j2 dest=~{{ steam_user }}/.klei/DoNotStarveTogether/settings.ini owner={{steam_user}}
+  sudo_user: '{{ steam_user }}'

@@ -1,0 +1,11 @@
+- hosts: dont-starve-together
+  remote_user: root
+  vars:
+    steam_user: steam
+    steam_force_install_dir: /apps/dont-starve-together
+    apt_cache_ttl: 3600
+    server_token: token
+  roles:
+  - ubuntu
+  - steam
+  - dont-starve-together
