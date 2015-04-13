@@ -1,7 +1,5 @@
 - name: Make settings directory
-  file:
-    path=~/.klei/DoNotStarveTogether
-    state=directory
+  file: path=~/.klei/DoNotStarveTogether state=directory mode='ug+rwx'
 
 - name: Ensure steam_force_install_dir dir exists
   file: path={{steam_force_install_dir}} owner={{ steam_user }} state=directory
@@ -17,9 +15,8 @@
   sudo: yes
   sudo_user: '{{ steam_user }}'
 
-- name: Ensure settings dir exists
-  file: path=~{{ steam_user }}/.klei/DoNotStarveTogether state=directory
-
-- name: Copy settings.ini
-  template: src=../templates/settings.ini.j2 dest=~{{ steam_user }}/.klei/DoNotStarveTogether/settings.ini owner={{steam_user}}
-  sudo_user: '{{ steam_user }}'
+- name: Copy settings
+  template: src=../templates/{{ item }}.j2 dest=~/.klei/DoNotStarveTogether/{{ item }} owner={{steam_user}}
+  with_items:
+    - settings.ini
+    - worldgenoverride.lua
